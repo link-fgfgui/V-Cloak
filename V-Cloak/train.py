@@ -155,7 +155,8 @@ class VCloakTraining(object):
                                         device=self.device)
 
         # Preparing Dataset
-        self.filelist = glob.glob("Datasets/train-clean-100/*/*/*.flac")+glob.glob("Datasets/train-other-500/*/*/*.flac")
+        self.filelist = glob.glob("Datasets/LibriSpeech/dev-clean/*/*/*.flac")
+
         self.n_samples = len(self.filelist)
 
         self.msker = Masker(device=self.device)
@@ -213,7 +214,7 @@ class VCloakTraining(object):
                                                        batch_size=self.mini_batch_size,
                                                        shuffle=True,
                                                        drop_last=False,
-                                                       num_workers=32)
+                                                       num_workers=4)
 
             pbar = tqdm(train_loader)
 

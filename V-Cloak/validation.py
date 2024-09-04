@@ -36,7 +36,7 @@ def validation(validation_path='./Datasets/dev-clean',
                threshold = 0.267,
                M = 41641,
                N = 32089,
-               save=False):
+               save=True):
     # Set up validation parameters
     if output_path_root is None:
         output_path_root = './converted_sound_tmp_({})'\
@@ -55,7 +55,7 @@ def validation(validation_path='./Datasets/dev-clean',
 
     generator.eval()
     with torch.no_grad():
-        for filepath in glob.glob(validation_path + "/*/*/*.flac"):
+        for filepath in glob.glob(validation_path + "/*.wav"):
         # for speaker in os.listdir(validation_path):
             # Setting up sub dataset path and save path
             # validation_dir = os.path.join(validation_path, speaker)
@@ -124,22 +124,23 @@ def validation(validation_path='./Datasets/dev-clean',
                 torchaudio.save(filepath=os.path.join(output_path, os.path.basename(filepath)),
                             src=adv_audio,sample_rate=16000)
         # threshold = 0.5
-        results = ("Stats: ASR: {:.2f}%(thres: {:.3f}),\tscore:{:.2f}-{:.2f}({:.2f}),\tSNR(E):{:.2f}-{:.2f}dB,\tSNR(MAX):{:.2f}-{:.2f}dB"\
-                .format(100*np.sum(np.array(all_scores)<threshold)/len(all_scores), 
-                threshold,
-                min(all_scores), max(all_scores), sum(all_scores)/len(all_scores),
-                min(all_SNR1),
-                max(all_SNR1),
-                min(all_SNR2),
-                max(all_SNR2)))
-        print(results)
-        return results
+        # print(all_scores,all_SNR1,all_SNR2)
+        # results = ("Stats: ASR: {:.2f}%(thres: {:.3f}),\tscore:{:.2f}-{:.2f}({:.2f}),\tSNR(E):{:.2f}-{:.2f}dB,\tSNR(MAX):{:.2f}-{:.2f}dB"\
+        #         .format(100*np.sum(np.array(all_scores)<threshold)/len(all_scores), 
+        #         threshold,
+        #         min(all_scores), max(all_scores), sum(all_scores)/len(all_scores),
+        #         min(all_SNR1),
+        #         max(all_SNR1),
+        #         min(all_SNR2),
+        #         max(all_SNR2)))
+        # print(results)
+        # return results
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--validation_path', default='./data/6930',help="validation dataset path")
+    parser.add_argument('--validation_path', default='./out',help="validation dataset path")
     parser.add_argument('--output_root_path', default='./converted_sound_Waveunet_test',help="path to store the validation output")
-    parser.add_argument('--checkpoint', default='./model_checkpoint/_VCloak_Checkpoint',help="model checkpoint on which validation is done")
+    parser.add_argument('--checkpoint', default='./model_checkpoint_GPU/_VCloak_CheckPoint_newest',help="model checkpoint on which validation is done")
     parser.add_argument('--eps', type=float, default=0.1, help="max amplitude of the adversarial noise")
     parser.add_argument('--normalize', type=bool, default=False, help="normalize or not")
     parser.add_argument('--threshold', type=float, default=0.267, help="threshold of ecapa")
@@ -195,7 +196,7 @@ if __name__=='__main__':
                 generator = generator,
                 target_model = target_model,
                 device=device,
-                output_path_root=args.output_root_path,
+                output_path_root=None,
                 eps = args.eps,
                 normalize = args.normalize,
                 threshold = args.threshold,

@@ -386,7 +386,7 @@ class PyTorchDeepSpeech(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyT
 
             # Call to DeepSpeech model for prediction
             with torch.no_grad():
-                outputs, output_sizes = self.DP_model(
+                outputs, output_sizes,dim = self.DP_model(
                     inputs[begin:end].to(self._device), input_sizes[begin:end].to(self._device)
                 )
 
@@ -462,7 +462,7 @@ class PyTorchDeepSpeech(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyT
         input_sizes = input_rates.mul_(inputs.size()[-1]).int()
 
         # Call to DeepSpeech model for prediction
-        outputs, output_sizes = self.DP_model(inputs.to(self._device), input_sizes.to(self._device))
+        outputs, output_sizes,dim = self.DP_model(inputs.to(self._device), input_sizes.to(self._device))
         outputs = outputs.transpose(0, 1)
 
         if self._version == 2:
@@ -572,7 +572,7 @@ class PyTorchDeepSpeech(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyT
                 self.optimizer.zero_grad()
 
                 # Call to DeepSpeech model for prediction
-                outputs, output_sizes = self.DP_model(inputs.to(self._device), input_sizes.to(self._device))
+                outputs, output_sizes,dim = self.DP_model(inputs.to(self._device), input_sizes.to(self._device))
                 outputs = outputs.transpose(0, 1)
 
                 if self._version == 2:
@@ -631,7 +631,7 @@ class PyTorchDeepSpeech(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyT
         input_sizes = input_rates.mul_(inputs.size()[-1]).int()
 
         # Call to DeepSpeech model for prediction
-        outputs, output_sizes = self.DP_model(inputs.to(self.device), input_sizes.to(self.device))
+        outputs, output_sizes,dim = self.DP_model(inputs.to(self.device), input_sizes.to(self.device))
         outputs_ = outputs.transpose(0, 1)
 
         if self._version == 2:
